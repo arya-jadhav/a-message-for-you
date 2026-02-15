@@ -44,7 +44,7 @@
             object-fit: cover;
             border: 3px solid white;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 5;
+            z-index: 60; /* Increased to be above the open envelope (z-index 40) */
             transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
             opacity: 0;
@@ -318,8 +318,17 @@
                 // Small delay for each image to make the burst look better
                 setTimeout(() => {
                     img.classList.add('active');
-                    const randomX = (Math.random() - 0.5) * spreadX * 2;
-                    const randomY = (Math.random() - 0.5) * spreadY * 2;
+                    
+                    // Ensure images scatter AWAY from the center area where the envelope is
+                    // We'll use a minimum distance for the random offset
+                    const minDistance = isMobile ? 100 : 150;
+                    let randomX = (Math.random() - 0.5) * spreadX * 2;
+                    let randomY = (Math.random() - 0.5) * spreadY * 2;
+                    
+                    // If the random point is too close to center, push it out
+                    if (Math.abs(randomX) < minDistance) randomX += (randomX > 0 ? minDistance : -minDistance);
+                    if (Math.abs(randomY) < minDistance) randomY += (randomY > 0 ? minDistance : -minDistance);
+
                     const randomRot = (Math.random() - 0.5) * 60;
 
                     img.style.transform = `translate(calc(-50% + ${randomX}px), calc(-50% + ${randomY}px)) rotate(${randomRot}deg) scale(1)`;
