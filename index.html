@@ -39,10 +39,10 @@
 
         .scatter-photo {
             position: absolute;
-            width: 150px;
-            height: 150px;
+            width: 100px;
+            height: 100px;
             object-fit: cover;
-            border: 5px solid white;
+            border: 3px solid white;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             z-index: 5;
             transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -53,6 +53,14 @@
             transform: translate(-50%, -50%) scale(0.1);
         }
 
+        @media (min-width: 600px) {
+            .scatter-photo {
+                width: 150px;
+                height: 150px;
+                border-width: 5px;
+            }
+        }
+
         .scatter-photo.active {
             opacity: 1;
             pointer-events: auto;
@@ -60,7 +68,8 @@
 
         .envelope {
             position: relative;
-            width: 450px;
+            width: 90vw;
+            max-width: 450px;
             height: 250px;
             background-color: var(--envelope-color);
             border-radius: 0 0 8px 8px;
@@ -76,11 +85,17 @@
             width: 0;
             height: 0;
             border-style: solid;
-            border-width: 125px 225px 0 225px;
+            border-width: 125px 45vw 0 45vw;
             border-color: var(--envelope-flap-color) transparent transparent transparent;
             z-index: 30;
             transform-origin: top;
             transition: transform 0.5s ease-in-out;
+        }
+
+        @media (min-width: 500px) {
+            .envelope::before {
+                border-width: 125px 225px 0 225px;
+            }
         }
 
         .envelope.open::before {
@@ -96,9 +111,15 @@
             width: 0;
             height: 0;
             border-style: solid;
-            border-width: 0 225px 125px 225px;
+            border-width: 0 45vw 125px 45vw;
             border-color: transparent var(--envelope-color) var(--envelope-color) var(--envelope-color);
             z-index: 25;
+        }
+
+        @media (min-width: 500px) {
+            .envelope::after {
+                border-width: 0 225px 125px 225px;
+            }
         }
 
         .envelope-sides {
@@ -108,21 +129,34 @@
             width: 0;
             height: 0;
             border-style: solid;
-            border-width: 125px 0 125px 225px;
+            border-width: 125px 0 125px 45vw;
             border-color: transparent transparent transparent var(--envelope-flap-color);
             z-index: 20;
+        }
+
+        @media (min-width: 500px) {
+            .envelope-sides {
+                border-width: 125px 0 125px 225px;
+            }
         }
 
         .envelope-sides::after {
             content: "";
             position: absolute;
             top: -125px;
-            right: -225px;
+            right: -45vw;
             width: 0;
             height: 0;
             border-style: solid;
-            border-width: 125px 225px 125px 0;
+            border-width: 125px 45vw 125px 0;
             border-color: transparent var(--envelope-flap-color) transparent transparent;
+        }
+
+        @media (min-width: 500px) {
+            .envelope-sides::after {
+                right: -225px;
+                border-width: 125px 225px 125px 0;
+            }
         }
 
         .paper {
@@ -130,7 +164,8 @@
             bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 410px;
+            width: 82vw;
+            max-width: 410px;
             height: 230px;
             background-color: var(--paper-color);
             padding: 20px;
@@ -142,12 +177,27 @@
             align-items: center;
             justify-content: center;
             text-align: center;
+            overflow: hidden;
         }
 
         .envelope.open .paper {
             transform: translateX(-50%) translateY(-150px);
             height: 380px;
             z-index: 40;
+        }
+
+        @media (max-width: 500px) {
+            .envelope.open .paper {
+                transform: translateX(-50%) translateY(-180px);
+                height: 320px;
+            }
+            .message-text {
+                font-size: 0.9rem;
+            }
+            .message-text h2 {
+                font-size: 1.25rem;
+                margin-bottom: 0.5rem;
+            }
         }
 
         .wax-seal {
@@ -255,6 +305,10 @@
         }
 
         function scatterImages(container) {
+            const isMobile = window.innerWidth < 600;
+            const spreadX = isMobile ? window.innerWidth * 0.4 : 400;
+            const spreadY = isMobile ? window.innerHeight * 0.3 : 300;
+
             images.forEach((src, index) => {
                 const img = document.createElement('img');
                 img.src = src;
@@ -264,9 +318,9 @@
                 // Small delay for each image to make the burst look better
                 setTimeout(() => {
                     img.classList.add('active');
-                    const randomX = (Math.random() - 0.5) * 800; // Random horizontal spread
-                    const randomY = (Math.random() - 0.5) * 600; // Random vertical spread
-                    const randomRot = (Math.random() - 0.5) * 60; // Random rotation
+                    const randomX = (Math.random() - 0.5) * spreadX * 2;
+                    const randomY = (Math.random() - 0.5) * spreadY * 2;
+                    const randomRot = (Math.random() - 0.5) * 60;
 
                     img.style.transform = `translate(calc(-50% + ${randomX}px), calc(-50% + ${randomY}px)) rotate(${randomRot}deg) scale(1)`;
                 }, index * 100);
