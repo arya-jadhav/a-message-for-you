@@ -312,8 +312,20 @@
 
         function scatterImages(container) {
             const isMobile = window.innerWidth < 600;
-            const spreadX = isMobile ? window.innerWidth * 0.4 : 400;
-            const spreadY = isMobile ? window.innerHeight * 0.3 : 300;
+            
+            // Define static positions (offsets from center) for each image
+            // This ensures they never overlap the poem or each other
+            const positions = isMobile ? [
+                { x: -140, y: -250, rot: -15 }, // Top Left
+                { x: 140, y: -250, rot: 15 },  // Top Right
+                { x: -140, y: 200, rot: -10 },  // Bottom Left
+                { x: 140, y: 200, rot: 10 }    // Bottom Right
+            ] : [
+                { x: -350, y: -180, rot: -15 }, // Top Left
+                { x: 350, y: -180, rot: 15 },  // Top Right
+                { x: -350, y: 180, rot: -10 },  // Bottom Left
+                { x: 350, y: 180, rot: 10 }    // Bottom Right
+            ];
 
             images.forEach((src, index) => {
                 const img = document.createElement('img');
@@ -321,23 +333,13 @@
                 img.className = 'scatter-photo';
                 container.appendChild(img);
 
-                // Small delay for each image to make the burst look better
+                // Use the predefined position for this index
+                // If there are more images than positions, it will loop
+                const pos = positions[index % positions.length];
+
                 setTimeout(() => {
                     img.classList.add('active');
-                    
-                    // Ensure images scatter AWAY from the center area where the envelope is
-                    // We'll use a minimum distance for the random offset
-                    const minDistance = isMobile ? 100 : 150;
-                    let randomX = (Math.random() - 0.5) * spreadX * 2;
-                    let randomY = (Math.random() - 0.5) * spreadY * 2;
-                    
-                    // If the random point is too close to center, push it out
-                    if (Math.abs(randomX) < minDistance) randomX += (randomX > 0 ? minDistance : -minDistance);
-                    if (Math.abs(randomY) < minDistance) randomY += (randomY > 0 ? minDistance : -minDistance);
-
-                    const randomRot = (Math.random() - 0.5) * 60;
-
-                    img.style.transform = `translate(calc(-50% + ${randomX}px), calc(-50% + ${randomY}px)) rotate(${randomRot}deg) scale(1)`;
+                    img.style.transform = `translate(calc(-50% + ${pos.x}px), calc(-50% + ${pos.y}px)) rotate(${pos.rot}deg) scale(1)`;
                 }, index * 100);
             });
         }
