@@ -12,6 +12,7 @@
             --envelope-flap-color: #e5e7eb;
             --paper-color: #ffffff;
             --accent-color: #ef4444;
+            --wax-seal-color: #991b1b;
         }
 
         body {
@@ -127,18 +128,34 @@
             z-index: 40;
         }
 
-        .heart {
+        .wax-seal {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: var(--accent-color);
-            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            background-color: var(--wax-seal-color);
+            border-radius: 50%;
             z-index: 35;
             transition: opacity 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #7f1d1d;
         }
 
-        .envelope.open .heart {
+        .wax-seal::before {
+            content: "A";
+            color: #7f1d1d;
+            font-family: 'Times New Roman', serif;
+            font-weight: bold;
+            font-size: 1.5rem;
+            opacity: 0.6;
+        }
+
+        .envelope.open .wax-seal {
             opacity: 0;
         }
 
@@ -179,7 +196,7 @@
             <div class="envelope-sides"></div>
             <div class="paper">
                 <div class="message-text">
-                    <h2 class="text-2xl font-bold mb-4 text-red-600">A Little Poem...</h2>
+                    <h2 class="text-2xl font-bold mb-4 text-red-600">A Poem For You</h2>
                     <p>Roses are red,</p>
                     <p>I don't understand why violets are blue,</p>
                     <p>That was defintely <strong>The Worst Fourth Date Ever™</strong>,</p>
@@ -189,9 +206,7 @@
                     </div>
                 </div>
             </div>
-            <div class="heart">
-                <i class="fas fa-heart"></i>
-            </div>
+            <div class="wax-seal"></div>
         </div>
         <div class="instruction" id="instruction">Click to open</div>
     </div>
